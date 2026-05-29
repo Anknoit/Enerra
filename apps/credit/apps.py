@@ -1,0 +1,10 @@
+from django.apps import AppConfig
+
+
+class CreditConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'apps.credit'
+    label = 'credit'
+
+    def ready(self):
+        import apps.credit.signals  # noqa: F401

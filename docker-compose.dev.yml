@@ -1,0 +1,32 @@
+services:
+  web:
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+      DEBUG: "True"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+
+  celery_worker:
+    command: celery -A config worker -l debug
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+    volumes:
+      - .:/app
+
+  celery_beat:
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+    volumes:
+      - .:/app
+
+  flower:
+    image: mher/flower
+    environment:
+      CELERY_BROKER_URL: redis://:redispass@redis:6379/0
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
